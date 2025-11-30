@@ -39,41 +39,41 @@ jobs:
           format: sarif
           output: trivy-results.sarif
 
-      # - name: Run VulnSort on Trivy results
-      #   id: vulnsort
-      #   uses: shivamsaraswat/VulnSort@main
-      #   with:
-      #     scan-results-file: trivy-results.json
-      #     output-file: trivy-prioritized.json
+      - name: Run VulnSort on Trivy results
+        id: vulnsort
+        uses: shivamsaraswat/VulnSort@main
+        with:
+          scan-results-file: trivy-results.sarif
+          output-file: trivy-prioritized.sarif
 
-      # - name: Display results
-      #   run: |
-      #     echo "## Trivy Scan Results"
-      #     echo "Critical (KEV): ${{ steps.vulnsort.outputs.critical-count }}"
-      #     echo "High (EPSS>=70%): ${{ steps.vulnsort.outputs.high-count }}"
-      #     echo "Medium (EPSS>=30%): ${{ steps.vulnsort.outputs.medium-count }}"
-      #     echo "Low (EPSS>=10%): ${{ steps.vulnsort.outputs.low-count }}"
-      #     echo "Info (EPSS<10%): ${{ steps.vulnsort.outputs.info-count }}"
+      - name: Display results
+        run: |
+          echo "## Trivy Scan Results"
+          echo "Critical (KEV): ${{ steps.vulnsort.outputs.critical-count }}"
+          echo "High (EPSS>=70%): ${{ steps.vulnsort.outputs.high-count }}"
+          echo "Medium (EPSS>=30%): ${{ steps.vulnsort.outputs.medium-count }}"
+          echo "Low (EPSS>=10%): ${{ steps.vulnsort.outputs.low-count }}"
+          echo "Info (EPSS<10%): ${{ steps.vulnsort.outputs.info-count }}"
 
-      # - name: Verify output file created
-      #   run: |
-      #     if [ ! -f "trivy-prioritized.json" ]; then
-      #       echo "Error: Output file not created"
-      #       exit 1
-      #     fi
+      - name: Verify output file created
+        run: |
+          if [ ! -f "trivy-prioritized.sarif" ]; then
+            echo "Error: Output file not created"
+            exit 1
+          fi
 
-      # - name: Verify vulnsort fields added
-      #   run: |
-      #     if ! grep -q '"vulnsort"' trivy-prioritized.json; then
-      #       echo "Error: vulnsort fields not found in output"
-      #       exit 1
-      #     fi
-      #     echo "✓ vulnsort fields found in output"
+      - name: Verify vulnsort fields added
+        run: |
+          if ! grep -q '"vulnsort"' trivy-prioritized.sarif; then
+            echo "Error: vulnsort fields not found in output"
+            exit 1
+          fi
+          echo "✓ vulnsort fields found in output"
       
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: 'trivy-prioritized.sarif'
 
       # - name: Upload results
       #   uses: actions/upload-artifact@v5
@@ -81,27 +81,27 @@ jobs:
       #     name: trivy-results
       #     path: |
       #       trivy-results.sarif
-      #       # trivy-prioritized.json
+      #       trivy-prioritized.sarif
 
-  test-grype:
-    name: Test with Grype scan
-    runs-on: ubuntu-latest
+  # test-grype:
+  #   name: Test with Grype scan
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v6
 
-      - name: Pull test image
-        run: docker pull ${{ env.TEST_IMAGE }}
+  #     - name: Pull test image
+  #       run: docker pull ${{ env.TEST_IMAGE }}
 
-      - name: Run Grype scan
-        uses: anchore/scan-action@v7.2.1
-        with:
-          image: ${{ env.TEST_IMAGE }}
-          output-format: sarif
-          output-file: grype-results.sarif
-          fail-build: false
-          only-fixed: true
+  #     - name: Run Grype scan
+  #       uses: anchore/scan-action@v7.2.1
+  #       with:
+  #         image: ${{ env.TEST_IMAGE }}
+  #         output-format: sarif
+  #         output-file: grype-results.sarif
+  #         fail-build: false
+  #         only-fixed: true
 
       # - name: Run VulnSort on Grype results
       #   id: vulnsort
@@ -142,7 +142,7 @@ jobs:
       #       grype-results.sarif
       #       # grype-prioritized.json
 
-      - name: Upload Grype scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: 'grype-results.sarif'
+      # - name: Upload Grype scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v4
+      #   with:
+      #     sarif_file: 'grype-results.sarif'
