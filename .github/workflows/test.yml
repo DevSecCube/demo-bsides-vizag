@@ -35,44 +35,44 @@ jobs:
           format: json
           output: trivy-results.json
 
-      - name: Run VulnSort on Trivy results
-        id: vulnsort
-        uses: shivamsaraswat/VulnSort@main
-        with:
-          scan-results-file: trivy-results.json
-          output-file: trivy-prioritized.json
-
-      - name: Display results
-        run: |
-          echo "## Trivy Scan Results"
-          echo "Critical (KEV): ${{ steps.vulnsort.outputs.critical-count }}"
-          echo "High (EPSS>=70%): ${{ steps.vulnsort.outputs.high-count }}"
-          echo "Medium (EPSS>=30%): ${{ steps.vulnsort.outputs.medium-count }}"
-          echo "Low (EPSS>=10%): ${{ steps.vulnsort.outputs.low-count }}"
-          echo "Info (EPSS<10%): ${{ steps.vulnsort.outputs.info-count }}"
-
-      - name: Verify output file created
-        run: |
-          if [ ! -f "trivy-prioritized.json" ]; then
-            echo "Error: Output file not created"
-            exit 1
-          fi
-
-      - name: Verify vulnsort fields added
-        run: |
-          if ! grep -q '"vulnsort"' trivy-prioritized.json; then
-            echo "Error: vulnsort fields not found in output"
-            exit 1
-          fi
-          echo "✓ vulnsort fields found in output"
-
-      # - name: Upload results
-      #   uses: actions/upload-artifact@v5
+      # - name: Run VulnSort on Trivy results
+      #   id: vulnsort
+      #   uses: shivamsaraswat/VulnSort@main
       #   with:
-      #     name: trivy-results
-      #     path: |
-      #       trivy-results.json
-      #       trivy-prioritized.json
+      #     scan-results-file: trivy-results.json
+      #     output-file: trivy-prioritized.json
+
+      # - name: Display results
+      #   run: |
+      #     echo "## Trivy Scan Results"
+      #     echo "Critical (KEV): ${{ steps.vulnsort.outputs.critical-count }}"
+      #     echo "High (EPSS>=70%): ${{ steps.vulnsort.outputs.high-count }}"
+      #     echo "Medium (EPSS>=30%): ${{ steps.vulnsort.outputs.medium-count }}"
+      #     echo "Low (EPSS>=10%): ${{ steps.vulnsort.outputs.low-count }}"
+      #     echo "Info (EPSS<10%): ${{ steps.vulnsort.outputs.info-count }}"
+
+      # - name: Verify output file created
+      #   run: |
+      #     if [ ! -f "trivy-prioritized.json" ]; then
+      #       echo "Error: Output file not created"
+      #       exit 1
+      #     fi
+
+      # - name: Verify vulnsort fields added
+      #   run: |
+      #     if ! grep -q '"vulnsort"' trivy-prioritized.json; then
+      #       echo "Error: vulnsort fields not found in output"
+      #       exit 1
+      #     fi
+      #     echo "✓ vulnsort fields found in output"
+
+      - name: Upload results
+        uses: actions/upload-artifact@v5
+        with:
+          name: trivy-results
+          path: |
+            trivy-results.json
+            # trivy-prioritized.json
 
   test-grype:
     name: Test with Grype scan
@@ -94,41 +94,41 @@ jobs:
           fail-build: false
           only-fixed: true
 
-      - name: Run VulnSort on Grype results
-        id: vulnsort
-        uses: shivamsaraswat/VulnSort@main
-        with:
-          scan-results-file: grype-results.json
-          output-file: grype-prioritized.json
-
-      - name: Display results
-        run: |
-          echo "## Grype Scan Results"
-          echo "Critical (KEV): ${{ steps.vulnsort.outputs.critical-count }}"
-          echo "High (EPSS>=70%): ${{ steps.vulnsort.outputs.high-count }}"
-          echo "Medium (EPSS>=30%): ${{ steps.vulnsort.outputs.medium-count }}"
-          echo "Low (EPSS>=10%): ${{ steps.vulnsort.outputs.low-count }}"
-          echo "Info (EPSS<10%): ${{ steps.vulnsort.outputs.info-count }}"
-
-      - name: Verify output file created
-        run: |
-          if [ ! -f "grype-prioritized.json" ]; then
-            echo "Error: Output file not created"
-            exit 1
-          fi
-
-      - name: Verify vulnsort fields added
-        run: |
-          if ! grep -q '"vulnsort"' grype-prioritized.json; then
-            echo "Error: vulnsort fields not found in output"
-            exit 1
-          fi
-          echo "✓ vulnsort fields found in output"
-
-      # - name: Upload results
-      #   uses: actions/upload-artifact@v5
+      # - name: Run VulnSort on Grype results
+      #   id: vulnsort
+      #   uses: shivamsaraswat/VulnSort@main
       #   with:
-      #     name: grype-results
-      #     path: |
-      #       grype-results.json
-      #       grype-prioritized.json
+      #     scan-results-file: grype-results.json
+      #     output-file: grype-prioritized.json
+
+      # - name: Display results
+      #   run: |
+      #     echo "## Grype Scan Results"
+      #     echo "Critical (KEV): ${{ steps.vulnsort.outputs.critical-count }}"
+      #     echo "High (EPSS>=70%): ${{ steps.vulnsort.outputs.high-count }}"
+      #     echo "Medium (EPSS>=30%): ${{ steps.vulnsort.outputs.medium-count }}"
+      #     echo "Low (EPSS>=10%): ${{ steps.vulnsort.outputs.low-count }}"
+      #     echo "Info (EPSS<10%): ${{ steps.vulnsort.outputs.info-count }}"
+
+      # - name: Verify output file created
+      #   run: |
+      #     if [ ! -f "grype-prioritized.json" ]; then
+      #       echo "Error: Output file not created"
+      #       exit 1
+      #     fi
+
+      # - name: Verify vulnsort fields added
+      #   run: |
+      #     if ! grep -q '"vulnsort"' grype-prioritized.json; then
+      #       echo "Error: vulnsort fields not found in output"
+      #       exit 1
+      #     fi
+      #     echo "✓ vulnsort fields found in output"
+
+      - name: Upload results
+        uses: actions/upload-artifact@v5
+        with:
+          name: grype-results
+          path: |
+            grype-results.json
+            # grype-prioritized.json
