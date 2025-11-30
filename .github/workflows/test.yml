@@ -37,7 +37,7 @@ jobs:
 
       - name: Run VulnSort on Trivy results
         id: vulnsort
-        uses: ./
+        uses: shivamsaraswat/VulnSort@main
         with:
           scan-results-file: trivy-results.json
           output-file: trivy-prioritized.json
@@ -96,7 +96,7 @@ jobs:
 
       - name: Run VulnSort on Grype results
         id: vulnsort
-        uses: ./
+        uses: shivamsaraswat/VulnSort@main
         with:
           scan-results-file: grype-results.json
           output-file: grype-prioritized.json
